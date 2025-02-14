@@ -22,15 +22,6 @@ func getGridColumnsClass(columns int) string {
 
 templ ModelGrid(models []Model, columns int) {
 	<div id="model-grid">
-		<div class="search-container">
-			<input
-				type="search"
-				id="model-search"
-				name="search"
-				placeholder="Search by name..."
-				class="search-input"
-			/>
-		</div>
 		<div class="model-grid">
 			for _, model := range models {
 				<a
@@ -53,41 +44,6 @@ templ ModelGrid(models []Model, columns int) {
 			}
 		</div>
 	</div>
-	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			const searchInput = document.getElementById('model-search');
-			const modelCards = document.querySelectorAll('.model-card');
-
-			function filterModels(searchTerm) {
-				searchTerm = searchTerm.toLowerCase();
-				modelCards.forEach(card => {
-					const modelName = card.dataset.modelName.toLowerCase();
-					const isVisible = modelName.includes(searchTerm);
-					card.style.display = isVisible ? '' : 'none';
-				});
-			}
-
-			// Debounce function
-			function debounce(func, wait) {
-				let timeout;
-				return function executedFunction(...args) {
-					const later = () => {
-						clearTimeout(timeout);
-						func(...args);
-					};
-					clearTimeout(timeout);
-					timeout = setTimeout(later, wait);
-				};
-			}
-
-			// Add event listener with debounce
-			if (searchInput) {
-				searchInput.addEventListener('input', debounce(function(e) {
-					filterModels(e.target.value);
-				}, 300));
-			}
-		});
-	</script>
 }
 
 templ RenderGridContent(models []Model, columns int) {

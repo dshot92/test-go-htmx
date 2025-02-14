@@ -206,67 +206,49 @@ body {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* Search */
-.search-container {
-  margin-bottom: 1.5rem;
-}
-
-.search-input {
-  width: 100%;
+/* Create a shared nav-input style for both search and select */
+.nav-input {
+  height: 2.5rem;
   padding: 0.75rem 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  background-color: var(--color-surface);
-  color: var(--color-text);
-  font-family: inherit;
-}
-
-.search-input:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: -1px;
-}
-
-/* Category select */
-.category-select {
-  padding: 0.75rem 2.5rem 0.75rem 1rem;
   border-radius: 0.5rem;
   border: 1px solid var(--color-border);
   background-color: var(--color-surface);
   color: var(--color-text);
   font-family: inherit;
-  cursor: pointer;
   transition: all 0.2s;
+  width: 200px;
+}
+
+/* Specific styles for the select dropdown */
+select.nav-input {
   appearance: none;
+  padding-right: 2.5rem;
+  cursor: pointer;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 1.25rem;
 }
 
-.category-select:hover {
-  background-color: var(--color-secondary);
+.nav-input:hover {
+  border-color: var(--color-primary);
 }
 
-.category-select:focus {
+.nav-input:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.dark .category-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23e2e8f0'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-}
-
-.category-select option {
-  padding: 0.75rem 1rem;
-  background-color: var(--color-surface);
-  color: var(--color-text);
-  font-family: inherit;
-}
-
-.dark .category-select option {
+/* Dark mode styles */
+.dark .nav-input {
   background-color: var(--color-surface-dark);
   color: var(--color-text-dark);
+  border-color: var(--color-border-dark);
+}
+
+.dark select.nav-input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23e2e8f0'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
 }
 
 /* Model Viewer */

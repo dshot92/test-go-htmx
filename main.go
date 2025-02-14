@@ -50,7 +50,7 @@ func loadModels() ([]templates.Model, []string) {
 		}
 
 		// Log all files/directories being processed
-		log.Printf("Processing path: %s (isDir: %v)", path, info.IsDir())
+		// log.Printf("Processing path: %s (isDir: %v)", path, info.IsDir())
 
 		if info.IsDir() {
 			return nil
@@ -84,7 +84,7 @@ func loadModels() ([]templates.Model, []string) {
 			URL:      relPath,
 		}
 
-		log.Printf("Found model: %+v", model)
+		// log.Printf("Found model: %+v", model)
 
 		models = append(models, model)
 		categories[category] = true
@@ -100,8 +100,8 @@ func loadModels() ([]templates.Model, []string) {
 	}
 	sort.Strings(categoryList)
 
-	log.Printf("Loaded categories: %v", categoryList)
-	log.Printf("Total models loaded: %d", len(models))
+	// log.Printf("Loaded categories: %v", categoryList)
+	// log.Printf("Total models loaded: %d", len(models))
 
 	return models, categoryList
 }

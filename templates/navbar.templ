@@ -7,11 +7,18 @@ import (
 templ Navbar(categories []string, currentCategory string) {
     <nav class="navbar">
         <div class="container navbar-content">
-            <a href="/" class="site-title">3D Model Viewer</a>
+            <a href="/" class="site-title">Model Viewer</a>
             <div class="nav-controls">
+                <input 
+                    type="search" 
+                    id="search-input" 
+                    class="nav-input"
+                    placeholder="Search models..."
+                    onkeyup="handleSearch(event)"
+                />
                 <select
                     id="category-select"
-                    class="category-select"
+                    class="nav-input"
                     onchange="handleCategoryChange(this.value)"
                 >
                     <option value="all" selected?={currentCategory == "all"}>All Categories</option>
@@ -93,11 +100,32 @@ templ Navbar(categories []string, currentCategory string) {
                     localStorage.setItem('color-theme', 'dark');
                 }
             });
-        });
 
-        function handleCategoryChange(category) {
-            const url = '/category/' + category;
-            window.location.href = url;
-        }
+            // Updated search handling
+            function handleSearch(event) {
+                const searchTerm = event.target.value.toLowerCase().trim();
+                const modelCards = document.querySelectorAll('.model-card');
+                
+                modelCards.forEach(card => {
+                    const modelName = card.dataset.modelName.toLowerCase();
+                    const isVisible = modelName.includes(searchTerm);
+                    card.style.display = isVisible ? '' : 'none';
+                });
+            }
+
+            // Attach the search handler to the input
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', handleSearch);
+            searchInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Prevent form submission
+                }
+            });
+
+            function handleCategoryChange(category) {
+                const url = '/category/' + category;
+                window.location.href = url;
+            }
+        });
     </script>
 } 
