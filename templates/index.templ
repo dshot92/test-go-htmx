@@ -1,0 +1,26 @@
+package templates
+
+func safeCategoryURL(category string) templ.SafeURL {
+	if category == "all" {
+		return templ.URL("/category/all")
+	}
+	return templ.URL("/category/" + category)
+}
+
+templ Index(models []Model, categories []string, currentCategory string) {
+	@Layout("3D Model Viewer") {
+		@Navbar()
+		<div class="container mx-auto px-4 py-6">
+			<div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
+				<aside>
+					@Categories(categories, currentCategory)
+				</aside>
+				<main>
+					<div id="model-grid">
+						@ModelGrid(models)
+					</div>
+				</main>
+			</div>
+		</div>
+	}
+} 

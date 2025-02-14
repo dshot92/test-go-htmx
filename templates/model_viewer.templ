@@ -1,0 +1,28 @@
+package templates
+
+type ModelViewData struct {
+    Model Model
+    Title string
+}
+
+templ ModelViewer(data ModelViewData) {
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <title>{ data.Title }</title>
+            <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+        </head>
+        <body style="margin: 0; background-color: rgb(15, 23, 42);">
+            <model-viewer
+                src={ data.Model.Path }
+                camera-controls
+                auto-rotate
+                shadow-intensity="1"
+                style="background: transparent;"
+            >
+            </model-viewer>
+        </body>
+    </html>
+}

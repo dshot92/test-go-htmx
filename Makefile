@@ -1,0 +1,4 @@
+dev:
+	air
+
+.PHONY: dev 
