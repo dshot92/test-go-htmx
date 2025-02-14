@@ -20,7 +20,7 @@ func main() {
 
 	// Routes - Updated to match frontend URLs
 	e.GET("/", handleIndex)
-	e.GET("/category/:category", handleFilter) // Changed from /filter/:category
+	e.GET("/category/:category", handleFilter)
 	e.GET("/view/:category/:name", handleView)
 
 	// Start server
@@ -116,6 +116,22 @@ func handleFilter(c echo.Context) error {
 	log.Printf("Available categories: %v", categories)
 	log.Printf("Total models before filtering: %d", len(models))
 
+	// Check if this is an HTMX request
+	if c.Request().Header.Get("HX-Request") == "true" {
+		var filteredModels []templates.Model
+		if category == "all" {
+			filteredModels = models
+		} else {
+			for _, model := range models {
+				if strings.EqualFold(model.Category, category) {
+					filteredModels = append(filteredModels, model)
+				}
+			}
+		}
+		return templates.ModelGrid(filteredModels).Render(c.Request().Context(), c.Response().Writer)
+	}
+
+	// For regular browser requests, return the full page
 	if category == "all" || category == "" {
 		log.Printf("Returning all %d models", len(models))
 		return templates.Index(models, categories, "all").Render(c.Request().Context(), c.Response().Writer)

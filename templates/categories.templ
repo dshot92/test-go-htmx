@@ -6,9 +6,9 @@ templ Categories(categories []string, currentCategory string) {
         <div class="flex flex-wrap gap-2">
             <a
                 href="/category/all"
-                hx-get="/filter/all"
+                hx-get="/category/all"
                 hx-target="#model-grid"
-                hx-swap="innerHTML"
+                hx-swap="outerHTML"
                 hx-push-url="true"
                 class={`px-4 py-2 rounded-lg transition-colors whitespace-nowrap
                     ${currentCategory == "all" ? 
@@ -20,9 +20,9 @@ templ Categories(categories []string, currentCategory string) {
             for _, category := range categories {
                 <a
                     href={ templ.SafeURL("/category/" + category) }
-                    hx-get={ "/filter/" + category }
+                    hx-get={ "/category/" + category }
                     hx-target="#model-grid"
-                    hx-swap="innerHTML"
+                    hx-swap="outerHTML"
                     hx-push-url="true"
                     class={`px-4 py-2 rounded-lg transition-colors whitespace-nowrap
                         ${currentCategory == category ? 

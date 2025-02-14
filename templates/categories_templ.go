@@ -41,7 +41,7 @@ func Categories(categories []string, currentCategory string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<a href=\"/category/all\" hx-get=\"/filter/all\" hx-target=\"#model-grid\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<a href=\"/category/all\" hx-get=\"/category/all\" hx-target=\"#model-grid\" hx-swap=\"outerHTML\" hx-push-url=\"true\" class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -81,15 +81,15 @@ func Categories(categories []string, currentCategory string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var6 string
-			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs("/filter/" + category)
+			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs("/category/" + category)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/categories.templ`, Line: 23, Col: 50}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/categories.templ`, Line: 23, Col: 52}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\" hx-target=\"#model-grid\" hx-swap=\"innerHTML\" hx-push-url=\"true\" class=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\" hx-target=\"#model-grid\" hx-swap=\"outerHTML\" hx-push-url=\"true\" class=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

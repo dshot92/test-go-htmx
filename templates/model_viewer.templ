@@ -6,23 +6,22 @@ type ModelViewData struct {
 }
 
 templ ModelViewer(data ModelViewData) {
-    <!DOCTYPE html>
-    <html lang="en">
-        <head>
-            <meta charset="UTF-8"/>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-            <title>{ data.Title }</title>
-            <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
-        </head>
-        <body style="margin: 0; background-color: rgb(15, 23, 42);">
-            <model-viewer
-                src={ data.Model.Path }
-                camera-controls
-                auto-rotate
-                shadow-intensity="1"
-                style="background: transparent;"
-            >
-            </model-viewer>
-        </body>
-    </html>
+    <div 
+        class="fixed inset-0 z-50 bg-slate-900 m-0 p-0"
+        hx-history="false"
+        hx-preserve="true"
+        style="margin: 0; padding: 0;"
+    >
+        <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+        <model-viewer
+            src={ data.Model.Path }
+            camera-controls
+            auto-rotate
+            shadow-intensity="2"
+            style="width: 100%; height: 100%; background: rgb(15, 23, 42); margin: 0; padding: 0;"
+            exposure="1"
+            environment-image="neutral"
+        >
+        </model-viewer>
+    </div>
 }

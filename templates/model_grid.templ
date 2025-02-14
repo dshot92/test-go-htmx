@@ -17,29 +17,76 @@ func getThumbnailPath(model Model) string {
 }
 
 templ ModelGrid(models []Model) {
-	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-		for _, model := range models {
-			<a
-				href={ safeViewURL(model.Category, model.Name) }
-				class="group bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
-			>
-				<div class="aspect-square relative bg-gray-100 dark:bg-gray-900">
-					<img
-						src={ getThumbnailPath(model) }
-						alt={ "Thumbnail of " + model.Name }
-						class="w-full h-full object-contain p-2"
-					/>
-				</div>
-				<div class="p-4">
-					<h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">{ model.Name }</h3>
-					<p class="text-sm text-gray-600 dark:text-gray-300">{ model.Category }</p>
-					if model.Section != "" {
-						<p class="text-sm text-gray-500 dark:text-gray-400">{ model.Section }</p>
-					}
-				</div>
-			</a>
-		}
+	<div id="model-grid">
+		<div class="mb-6">
+			<input
+				type="search"
+				id="model-search"
+				name="search"
+				placeholder="Search by name..."
+				class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+			/>
+		</div>
+		<div id="grid-content" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+			for _, model := range models {
+				<a
+					href={ safeViewURL(model.Category, model.Name) }
+					class="group bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow model-card"
+					data-model-name={ model.Name }
+					data-model-category={ model.Category }
+				>
+					<div class="aspect-square relative bg-gray-100 dark:bg-gray-900">
+						<img
+							src={ getThumbnailPath(model) }
+							alt={ "Thumbnail of " + model.Name }
+							class="w-full h-full object-contain p-2"
+						/>
+					</div>
+					<div class="p-4">
+						<h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">{ model.Name }</h3>
+						<p class="text-sm text-gray-600 dark:text-gray-300">{ model.Category }</p>
+						if model.Section != "" {
+							<p class="text-sm text-gray-500 dark:text-gray-400">{ model.Section }</p>
+						}
+					</div>
+				</a>
+			}
+		</div>
 	</div>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const searchInput = document.getElementById('model-search');
+			const modelCards = document.querySelectorAll('.model-card');
+
+			function filterModels(searchTerm) {
+				searchTerm = searchTerm.toLowerCase();
+				modelCards.forEach(card => {
+					const modelName = card.dataset.modelName.toLowerCase();
+					const modelCategory = card.dataset.modelCategory.toLowerCase();
+					const isVisible = modelName.includes(searchTerm) || modelCategory.includes(searchTerm);
+					card.style.display = isVisible ? '' : 'none';
+				});
+			}
+
+			// Debounce function to limit how often the filter runs
+			function debounce(func, wait) {
+				let timeout;
+				return function executedFunction(...args) {
+					const later = () => {
+						clearTimeout(timeout);
+						func(...args);
+					};
+					clearTimeout(timeout);
+					timeout = setTimeout(later, wait);
+				};
+			}
+
+			// Add event listener with debounce
+			searchInput.addEventListener('input', debounce(function(e) {
+				filterModels(e.target.value);
+			}, 300));
+		});
+	</script>
 }
 
 type GridState struct {

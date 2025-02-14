@@ -34,33 +34,20 @@ func ModelViewer(data ModelViewData) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"fixed inset-0 z-50 bg-slate-900 m-0 p-0\" hx-history=\"false\" hx-preserve=\"true\" style=\"margin: 0; padding: 0;\"><script type=\"module\" src=\"https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js\"></script><model-viewer src=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(data.Title)
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(data.Model.Path)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_viewer.templ`, Line: 14, Col: 31}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_viewer.templ`, Line: 17, Col: 33}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</title><script type=\"module\" src=\"https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js\"></script></head><body style=\"margin: 0; background-color: rgb(15, 23, 42);\"><model-viewer src=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var3 string
-		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(data.Model.Path)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_viewer.templ`, Line: 19, Col: 37}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\" camera-controls auto-rotate shadow-intensity=\"1\" style=\"background: transparent;\"></model-viewer></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" camera-controls auto-rotate shadow-intensity=\"2\" style=\"width: 100%; height: 100%; background: rgb(15, 23, 42); margin: 0; padding: 0;\" exposure=\"1\" environment-image=\"neutral\" background-color=\"rgb(15, 23, 42)\"></model-viewer></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
