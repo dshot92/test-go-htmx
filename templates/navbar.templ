@@ -68,6 +68,11 @@ templ Navbar(categories []string, currentCategory string) {
         </div>
     </nav>
     <script>
+        function handleCategoryChange(category) {
+            const url = '/category/' + category;
+            window.location.href = url;
+        }
+
         // Wait for DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', function() {
             // Theme handling
@@ -134,11 +139,6 @@ templ Navbar(categories []string, currentCategory string) {
                     event.preventDefault();
                 }
             });
-
-            function handleCategoryChange(category) {
-                const url = '/category/' + category;
-                window.location.href = url;
-            }
         });
     </script>
 } 
