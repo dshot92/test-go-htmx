@@ -9,56 +9,61 @@ templ Navbar(categories []string, currentCategory string) {
         <div class="container navbar-content">
             <a href="/" class="site-title">Model Viewer</a>
             <div class="nav-controls">
-                <input 
-                    type="search" 
-                    id="search-input" 
-                    class="nav-input"
-                    placeholder="Search models..."
-                    onkeyup="handleSearch(event)"
-                />
-                <select
-                    id="category-select"
-                    class="nav-input"
-                    onchange="handleCategoryChange(this.value)"
-                >
-                    <option value="all" selected?={currentCategory == "all"}>All Categories</option>
-                    for _, category := range categories {
-                        <option 
-                            value={category} 
-                            selected?={category == currentCategory}
-                        >
-                            { strings.Title(strings.ToLower(category)) }
+                <div class="search-container">
+                    <input 
+                        type="search" 
+                        id="search-input" 
+                        class="nav-input"
+                        placeholder="Search models..."
+                    />
+                </div>
+                <div class="top-controls">
+                    <select
+                        id="category-select"
+                        class="nav-input"
+                        onchange="handleCategoryChange(this.value)"
+                    >
+                        <option value="all" if currentCategory == "all" { selected }>
+                            All Categories
                         </option>
-                    }
-                </select>
-                <button
-                    id="theme-toggle"
-                    type="button"
-                    class="theme-toggle"
-                >
-                    <svg
-                        id="theme-toggle-dark-icon"
-                        class="hidden"
-                        width="20"
-                        height="20"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
+                        for _, category := range categories {
+                            <option 
+                                value={ category }
+                                if currentCategory == category { selected }
+                            >
+                                { strings.Title(strings.ToLower(category)) }
+                            </option>
+                        }
+                    </select>
+                    <button
+                        id="theme-toggle"
+                        type="button"
+                        class="theme-toggle"
                     >
-                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-                    </svg>
-                    <svg
-                        id="theme-toggle-light-icon"
-                        class="hidden"
-                        width="20"
-                        height="20"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path>
-                    </svg>
-                </button>
+                        <svg
+                            id="theme-toggle-dark-icon"
+                            class="hidden"
+                            width="20"
+                            height="20"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                        <svg
+                            id="theme-toggle-light-icon"
+                            class="hidden"
+                            width="20"
+                            height="20"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
@@ -101,24 +106,32 @@ templ Navbar(categories []string, currentCategory string) {
                 }
             });
 
-            // Updated search handling
-            function handleSearch(event) {
+            // Search functionality
+            const searchInput = document.getElementById('search-input');
+            const modelGrid = document.querySelector('.model-grid');
+            
+            searchInput.addEventListener('input', function(event) {
                 const searchTerm = event.target.value.toLowerCase().trim();
-                const modelCards = document.querySelectorAll('.model-card');
+                const modelCards = document.querySelectorAll('[data-model-name]');
                 
                 modelCards.forEach(card => {
                     const modelName = card.dataset.modelName.toLowerCase();
-                    const isVisible = modelName.includes(searchTerm);
-                    card.style.display = isVisible ? '' : 'none';
+                    if (modelName.includes(searchTerm)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
                 });
-            }
 
-            // Attach the search handler to the input
-            const searchInput = document.getElementById('search-input');
-            searchInput.addEventListener('input', handleSearch);
+                // Adjust grid layout if needed
+                if (searchTerm === '') {
+                    modelGrid.style.display = 'grid';
+                }
+            });
+
             searchInput.addEventListener('keydown', function(event) {
                 if (event.key === 'Enter') {
-                    event.preventDefault(); // Prevent form submission
+                    event.preventDefault();
                 }
             });
 

@@ -17,7 +17,7 @@ func getThumbnailPath(model Model) string {
 }
 
 func getGridColumnsClass(columns int) string {
-	return "grid gap-6 grid-cols-3 lg:grid-cols-5"
+	return "grid gap-4 grid-cols-3 lg:grid-cols-5"
 }
 
 templ ModelGrid(models []Model, columns int) {
@@ -29,6 +29,7 @@ templ ModelGrid(models []Model, columns int) {
 					class="model-card"
 					data-model-name={ model.Name }
 					data-model-category={ model.Category }
+					style="display: flex; flex-direction: column;"
 				>
 					<div class="model-image-container">
 						<img

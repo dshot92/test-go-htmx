@@ -3,6 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scrollbar-width: thin;
 }
 
 :root {
@@ -36,6 +37,8 @@ body {
   color: var(--color-text);
   min-height: 100vh;
   font-family: 'Roboto', sans-serif;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
 }
 
 /* Layout */
@@ -71,19 +74,45 @@ body {
   background-color: var(--color-surface);
   box-shadow: var(--shadow);
   border-bottom: 1px solid var(--color-border);
+  width: 100%;
 }
 
 .navbar-content {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 4rem;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .nav-controls {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+  flex-direction: column-reverse;
+  padding: 0;
+}
+
+.top-controls {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+}
+
+.search-container {
+  width: 100%;
+}
+
+.nav-input {
+  width: 100%;
+  max-width: none;
 }
 
 .site-title {
@@ -126,7 +155,6 @@ body {
   overflow-x: auto;
   padding-bottom: 0.5rem;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
 }
 
 .category-button,
@@ -144,7 +172,9 @@ body {
 .model-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
+  gap: 1rem;
+  min-height: 400px;
+  width: 100%;
 }
 
 @media (min-width: 1024px) {
@@ -216,7 +246,9 @@ body {
   color: var(--color-text);
   font-family: inherit;
   transition: all 0.2s;
-  width: 200px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
 }
 
 /* Specific styles for the select dropdown */
@@ -257,4 +289,51 @@ select.nav-input {
   inset: 0;
   z-index: 50;
   background-color: var(--color-bg-dark);
+}
+
+/* For Webkit browsers (Chrome, Safari, etc.) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-dark);
+}
+
+/* Media query for larger screens */
+@media (min-width: 768px) {
+  .navbar-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 4rem;
+    padding: 0 1rem;
+  }
+
+  .nav-controls {
+    flex-direction: row;
+    width: auto;
+    flex-wrap: nowrap;
+  }
+
+  .top-controls {
+    width: auto;
+  }
+
+  .search-container {
+    width: auto;
+  }
+
+  .nav-input {
+    width: 200px;
+  }
 } 
