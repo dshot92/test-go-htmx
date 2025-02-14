@@ -62,13 +62,12 @@ templ ModelGrid(models []Model, columns int) {
 				searchTerm = searchTerm.toLowerCase();
 				modelCards.forEach(card => {
 					const modelName = card.dataset.modelName.toLowerCase();
-					const modelCategory = card.dataset.modelCategory.toLowerCase();
-					const isVisible = modelName.includes(searchTerm) || modelCategory.includes(searchTerm);
+					const isVisible = modelName.includes(searchTerm);
 					card.style.display = isVisible ? '' : 'none';
 				});
 			}
 
-			// Debounce function to limit how often the filter runs
+			// Debounce function
 			function debounce(func, wait) {
 				let timeout;
 				return function executedFunction(...args) {
@@ -82,9 +81,11 @@ templ ModelGrid(models []Model, columns int) {
 			}
 
 			// Add event listener with debounce
-			searchInput.addEventListener('input', debounce(function(e) {
-				filterModels(e.target.value);
-			}, 300));
+			if (searchInput) {
+				searchInput.addEventListener('input', debounce(function(e) {
+					filterModels(e.target.value);
+				}, 300));
+			}
 		});
 	</script>
 }

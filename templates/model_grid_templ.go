@@ -133,7 +133,7 @@ func ModelGrid(models []Model, columns int) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div></div><script>\n\t\tdocument.addEventListener('DOMContentLoaded', function() {\n\t\t\tconst searchInput = document.getElementById('model-search');\n\t\t\tconst modelCards = document.querySelectorAll('.model-card');\n\n\t\t\tfunction filterModels(searchTerm) {\n\t\t\t\tsearchTerm = searchTerm.toLowerCase();\n\t\t\t\tmodelCards.forEach(card => {\n\t\t\t\t\tconst modelName = card.dataset.modelName.toLowerCase();\n\t\t\t\t\tconst modelCategory = card.dataset.modelCategory.toLowerCase();\n\t\t\t\t\tconst isVisible = modelName.includes(searchTerm) || modelCategory.includes(searchTerm);\n\t\t\t\t\tcard.style.display = isVisible ? '' : 'none';\n\t\t\t\t});\n\t\t\t}\n\n\t\t\t// Debounce function to limit how often the filter runs\n\t\t\tfunction debounce(func, wait) {\n\t\t\t\tlet timeout;\n\t\t\t\treturn function executedFunction(...args) {\n\t\t\t\t\tconst later = () => {\n\t\t\t\t\t\tclearTimeout(timeout);\n\t\t\t\t\t\tfunc(...args);\n\t\t\t\t\t};\n\t\t\t\t\tclearTimeout(timeout);\n\t\t\t\t\ttimeout = setTimeout(later, wait);\n\t\t\t\t};\n\t\t\t}\n\n\t\t\t// Add event listener with debounce\n\t\t\tsearchInput.addEventListener('input', debounce(function(e) {\n\t\t\t\tfilterModels(e.target.value);\n\t\t\t}, 300));\n\t\t});\n\t</script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div></div><script>\n\t\tdocument.addEventListener('DOMContentLoaded', function() {\n\t\t\tconst searchInput = document.getElementById('model-search');\n\t\t\tconst modelCards = document.querySelectorAll('.model-card');\n\n\t\t\tfunction filterModels(searchTerm) {\n\t\t\t\tsearchTerm = searchTerm.toLowerCase();\n\t\t\t\tmodelCards.forEach(card => {\n\t\t\t\t\tconst modelName = card.dataset.modelName.toLowerCase();\n\t\t\t\t\tconst isVisible = modelName.includes(searchTerm);\n\t\t\t\t\tcard.style.display = isVisible ? '' : 'none';\n\t\t\t\t});\n\t\t\t}\n\n\t\t\t// Debounce function\n\t\t\tfunction debounce(func, wait) {\n\t\t\t\tlet timeout;\n\t\t\t\treturn function executedFunction(...args) {\n\t\t\t\t\tconst later = () => {\n\t\t\t\t\t\tclearTimeout(timeout);\n\t\t\t\t\t\tfunc(...args);\n\t\t\t\t\t};\n\t\t\t\t\tclearTimeout(timeout);\n\t\t\t\t\ttimeout = setTimeout(later, wait);\n\t\t\t\t};\n\t\t\t}\n\n\t\t\t// Add event listener with debounce\n\t\t\tif (searchInput) {\n\t\t\t\tsearchInput.addEventListener('input', debounce(function(e) {\n\t\t\t\t\tfilterModels(e.target.value);\n\t\t\t\t}, 300));\n\t\t\t}\n\t\t});\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -201,7 +201,7 @@ func RenderGridContent(models []Model, columns int) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(model.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 102, Col: 32}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 103, Col: 32}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -214,7 +214,7 @@ func RenderGridContent(models []Model, columns int) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(model.Category)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 103, Col: 40}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 104, Col: 40}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
@@ -227,7 +227,7 @@ func RenderGridContent(models []Model, columns int) templ.Component {
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(getThumbnailPath(model))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 107, Col: 35}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 108, Col: 35}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
@@ -240,7 +240,7 @@ func RenderGridContent(models []Model, columns int) templ.Component {
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs("Thumbnail of " + model.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 108, Col: 40}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 109, Col: 40}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
@@ -253,7 +253,7 @@ func RenderGridContent(models []Model, columns int) templ.Component {
 			var templ_7745c5c3_Var16 string
 			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(model.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 114, Col: 18}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 115, Col: 18}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 			if templ_7745c5c3_Err != nil {
@@ -309,7 +309,7 @@ func (gs *GridState) renderSection(section string) templ.Component {
 		var templ_7745c5c3_Var18 string
 		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(section)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 134, Col: 12}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 135, Col: 12}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 		if templ_7745c5c3_Err != nil {
@@ -360,7 +360,7 @@ func (gs *GridState) renderModelCard(model Model) templ.Component {
 		var templ_7745c5c3_Var21 string
 		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs("View " + model.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 143, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 144, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 		if templ_7745c5c3_Err != nil {
@@ -373,7 +373,7 @@ func (gs *GridState) renderModelCard(model Model) templ.Component {
 		var templ_7745c5c3_Var22 string
 		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(getThumbnailPath(model))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 147, Col: 33}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 148, Col: 33}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 		if templ_7745c5c3_Err != nil {
@@ -386,7 +386,7 @@ func (gs *GridState) renderModelCard(model Model) templ.Component {
 		var templ_7745c5c3_Var23 string
 		templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs("Thumbnail of " + model.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 148, Col: 38}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 149, Col: 38}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 		if templ_7745c5c3_Err != nil {
@@ -399,7 +399,7 @@ func (gs *GridState) renderModelCard(model Model) templ.Component {
 		var templ_7745c5c3_Var24 string
 		templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(model.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 153, Col: 15}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/model_grid.templ`, Line: 154, Col: 15}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 		if templ_7745c5c3_Err != nil {
