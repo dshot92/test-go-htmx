@@ -47,7 +47,7 @@ func ModelViewer(data ModelViewData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" camera-controls auto-rotate shadow-intensity=\"2\" style=\"width: 100%; height: 100%; background: rgb(15, 23, 42); margin: 0; padding: 0;\" exposure=\"1\" environment-image=\"neutral\" background-color=\"rgb(15, 23, 42)\"></model-viewer></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" camera-controls auto-rotate ar ar-modes=\"webxr scene-viewer quick-look\" shadow-intensity=\"2\" style=\"width: 100%; height: 100%; background: rgb(15, 23, 42); margin: 0; padding: 0;\" exposure=\"1\" environment-image=\"neutral\"></model-viewer></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

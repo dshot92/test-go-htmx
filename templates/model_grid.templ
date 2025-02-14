@@ -3,6 +3,7 @@ package templates
 import (
 	t "github.com/a-h/templ"
 	"net/url"
+	"fmt"
 )
 
 func safeViewURL(category, name string) t.SafeURL {
@@ -16,42 +17,49 @@ func getThumbnailPath(model Model) string {
 	return "/static/thumbnails/" + model.Category + "/" + model.Name + ".webp"
 }
 
-templ ModelGrid(models []Model) {
+func getGridColumnsClass(columns int) string {
+	return fmt.Sprintf("grid gap-6 grid-cols-%d", columns)
+}
+
+templ ModelGrid(models []Model, columns int) {
 	<div id="model-grid">
 		<div class="mb-6">
-			<input
-				type="search"
-				id="model-search"
-				name="search"
-				placeholder="Search by name..."
-				class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-			/>
+			<div class="flex items-center justify-between">
+				<input
+					type="search"
+					id="model-search"
+					name="search"
+					placeholder="Search by name..."
+					class="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+				/>
+				<div class="flex items-center gap-2 ml-4">
+					<span class="text-sm text-gray-600 dark:text-gray-300">Columns:</span>
+					<button
+						hx-get="/grid/columns/decrease"
+						hx-target="#grid-content"
+						hx-swap="outerHTML"
+						class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white"
+					>
+						-
+					</button>
+					<span 
+                        id="column-count" 
+                        class="text-sm text-gray-600 dark:text-gray-300 min-w-[1.5rem] text-center"
+                        hx-get="/grid/columns/count"
+                        hx-trigger="load, columnsChanged from:body"
+                    >{ fmt.Sprint(columns) }</span>
+					<button
+						hx-get="/grid/columns/increase"
+						hx-target="#grid-content"
+						hx-swap="outerHTML"
+						class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white"
+					>
+						+
+					</button>
+				</div>
+			</div>
 		</div>
-		<div id="grid-content" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-			for _, model := range models {
-				<a
-					href={ safeViewURL(model.Category, model.Name) }
-					class="group bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow model-card"
-					data-model-name={ model.Name }
-					data-model-category={ model.Category }
-				>
-					<div class="aspect-square relative bg-gray-100 dark:bg-gray-900">
-						<img
-							src={ getThumbnailPath(model) }
-							alt={ "Thumbnail of " + model.Name }
-							class="w-full h-full object-contain p-2"
-						/>
-					</div>
-					<div class="p-4">
-						<h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">{ model.Name }</h3>
-						<p class="text-sm text-gray-600 dark:text-gray-300">{ model.Category }</p>
-						if model.Section != "" {
-							<p class="text-sm text-gray-500 dark:text-gray-400">{ model.Section }</p>
-						}
-					</div>
-				</a>
-			}
-		</div>
+		@RenderGridContent(models, columns)
 	</div>
 	<script>
 		document.addEventListener('DOMContentLoaded', function() {
@@ -86,7 +94,46 @@ templ ModelGrid(models []Model) {
 				filterModels(e.target.value);
 			}, 300));
 		});
+
+        // Listen for grid content updates and dispatch column change event
+        document.body.addEventListener('htmx:afterSwap', function(evt) {
+            if (evt.detail.target.id === 'grid-content') {
+                document.body.dispatchEvent(new Event('columnsChanged'));
+            }
+        });
 	</script>
+}
+
+templ RenderGridContent(models []Model, columns int) {
+	<div 
+		id="grid-content" 
+		class={ getGridColumnsClass(columns) }
+		style="display: grid; width: 100%;"
+	>
+		for _, model := range models {
+			<a
+				href={ safeViewURL(model.Category, model.Name) }
+				class="group bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow model-card"
+				data-model-name={ model.Name }
+				data-model-category={ model.Category }
+			>
+				<div class="aspect-square relative bg-gray-100 dark:bg-gray-900">
+					<img
+						src={ getThumbnailPath(model) }
+						alt={ "Thumbnail of " + model.Name }
+						class="w-full h-full object-contain p-2"
+					/>
+				</div>
+				<div class="p-4">
+					<h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">{ model.Name }</h3>
+					<p class="text-sm text-gray-600 dark:text-gray-300">{ model.Category }</p>
+					if model.Section != "" {
+						<p class="text-sm text-gray-500 dark:text-gray-400">{ model.Section }</p>
+					}
+				</div>
+			</a>
+		}
+	</div>
 }
 
 type GridState struct {

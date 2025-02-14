@@ -64,7 +64,7 @@ func Index(models []Model, categories []string, currentCategory string) templ.Co
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = ModelGrid(models).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = ModelGrid(models, 6).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
