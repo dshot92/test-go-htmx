@@ -33,11 +33,9 @@ func loadModels() ([]templates.Model, []string) {
 	categories := make(map[string]bool)
 
 	// Log the current working directory
-	pwd, err := os.Getwd()
+	_, err := os.Getwd()
 	if err != nil {
 		log.Printf("Error getting working directory: %v", err)
-	} else {
-		log.Printf("Current working directory: %s", pwd)
 	}
 
 	// Check if the models directory exists
@@ -112,9 +110,9 @@ func handleFilter(c echo.Context) error {
 	models, categories := loadModels()
 	category := c.Param("category")
 
-	log.Printf("Filter request - Category: %s", category)
-	log.Printf("Available categories: %v", categories)
-	log.Printf("Total models before filtering: %d", len(models))
+	// log.Printf("Filter request - Category: %s", category)
+	// log.Printf("Available categories: %v", categories)
+	// log.Printf("Total models before filtering: %d", len(models))
 
 	// Check if this is an HTMX request
 	if c.Request().Header.Get("HX-Request") == "true" {
@@ -140,13 +138,13 @@ func handleFilter(c echo.Context) error {
 
 	var filteredModels []templates.Model
 	for _, model := range models {
-		log.Printf("Comparing model category '%s' with requested category '%s'", model.Category, category)
+		// log.Printf("Comparing model category '%s' with requested category '%s'", model.Category, category)
 		if strings.EqualFold(model.Category, category) {
 			filteredModels = append(filteredModels, model)
 		}
 	}
 
-	log.Printf("Found %d models in category %s", len(filteredModels), category)
+	// log.Printf("Found %d models in category %s", len(filteredModels), category)
 	if len(filteredModels) == 0 {
 		log.Printf("WARNING: No models found for category: %s", category)
 	}
@@ -156,7 +154,7 @@ func handleFilter(c echo.Context) error {
 
 func handleIndex(c echo.Context) error {
 	models, categories := loadModels()
-	log.Printf("Index request - Available categories: %v", categories)
+	// log.Printf("Index request - Available categories: %v", categories)
 	return templates.Index(models, categories, "all").Render(c.Request().Context(), c.Response().Writer)
 }
 
@@ -165,7 +163,7 @@ func handleView(c echo.Context) error {
 	category := c.Param("category")
 	name := c.Param("name")
 
-	log.Printf("View request - Category: %s, Name: %s", category, name)
+	// log.Printf("View request - Category: %s, Name: %s", category, name)
 
 	var targetModel templates.Model
 	for _, model := range models {
