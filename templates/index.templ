@@ -10,8 +10,8 @@ func safeCategoryURL(category string) templ.SafeURL {
 templ Index(models []Model, categories []string, currentCategory string) {
 	@Layout("3D Model Viewer") {
 		@Navbar()
-		<div class="container mx-auto px-4 py-6">
-			<div class="flex flex-col gap-6">
+		<div class="page-layout">
+			<div class="container">
 				<aside>
 					@Categories(categories, currentCategory)
 				</aside>

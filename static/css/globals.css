@@ -1,0 +1,208 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --color-bg: #f8fafc;
+  --color-bg-dark: #0f172a;
+  --color-surface: #ffffff;
+  --color-surface-dark: #1e293b;
+  --color-text: #334155;
+  --color-text-dark: #e2e8f0;
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-secondary: #f1f5f9;
+  --color-secondary-hover: #e2e8f0;
+  --color-border: #e2e8f0;
+  --color-border-dark: #334155;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* Dark mode */
+.dark {
+  --color-bg: var(--color-bg-dark);
+  --color-surface: var(--color-surface-dark);
+  --color-text: var(--color-text-dark);
+  --color-border: var(--color-border-dark);
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.page-layout {
+  display: grid;
+  gap: 2rem;
+  padding: 2rem 1rem;
+}
+
+/* Navigation */
+.navbar {
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.navbar-content {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  height: 4rem;
+}
+
+.site-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.theme-toggle {
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.theme-toggle svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Categories */
+.categories-panel {
+  margin-bottom: 2rem;
+}
+
+.categories-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.categories-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  /* Smooth scrolling on mobile */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.category-button {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  text-align: center;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: 1px solid var(--color-border);
+}
+
+.category-button.active {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.category-button:not(.active) {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.category-button:hover:not(.active) {
+  background-color: var(--color-secondary);
+}
+
+/* Model Grid */
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .model-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.model-card {
+  background-color: var(--color-surface);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--color-border);
+}
+
+.model-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.model-image {
+  aspect-ratio: 1;
+  width: 100%;
+  object-fit: cover;
+}
+
+.model-name {
+  padding: 1rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Search */
+.search-container {
+  margin-bottom: 1.5rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-family: inherit;
+}
+
+.search-input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -1px;
+}
+
+/* Model Viewer */
+.model-viewer-container {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: var(--color-bg-dark);
+} 

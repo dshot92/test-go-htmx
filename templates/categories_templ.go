@@ -8,6 +8,8 @@ package templates
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import "strings"
+
 func Categories(categories []string, currentCategory string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -29,14 +31,14 @@ func Categories(categories []string, currentCategory string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"bg-white dark:bg-gray-800 shadow-sm rounded-lg p-4 mb-6\"><h2 class=\"text-lg font-semibold text-gray-800 dark:text-white mb-4\">Categories</h2><div class=\"flex flex-wrap gap-2\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"categories-panel\"><h2 class=\"categories-title\">Categories</h2><div class=\"categories-grid\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var2 = []any{`px-4 py-2 rounded-lg transition-colors whitespace-nowrap
-                    ${currentCategory == "all" ? 
-                        "bg-blue-500 text-white hover:bg-blue-600" : 
-                        "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600"}`}
+		var templ_7745c5c3_Var2 = []any{templ.Classes(
+			"category-button",
+			templ.KV("active", currentCategory == "all"),
+		)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -59,10 +61,10 @@ func Categories(categories []string, currentCategory string) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, category := range categories {
-			var templ_7745c5c3_Var4 = []any{`px-4 py-2 rounded-lg transition-colors whitespace-nowrap
-                        ${currentCategory == category ? 
-                            "bg-blue-500 text-white hover:bg-blue-600" : 
-                            "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600"}`}
+			var templ_7745c5c3_Var4 = []any{templ.Classes(
+				"category-button",
+				templ.KV("active", currentCategory == category),
+			)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var4...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -83,7 +85,7 @@ func Categories(categories []string, currentCategory string) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs("/category/" + category)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/categories.templ`, Line: 23, Col: 52}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/categories.templ`, Line: 25, Col: 52}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -107,9 +109,9 @@ func Categories(categories []string, currentCategory string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var8 string
-			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(category)
+			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(strings.Title(strings.ToLower(category)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/categories.templ`, Line: 32, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `templates/categories.templ`, Line: 34, Col: 62}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {

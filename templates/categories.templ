@@ -1,19 +1,21 @@
 package templates
 
+import "strings"
+
 templ Categories(categories []string, currentCategory string) {
-    <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-4 mb-6">
-        <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Categories</h2>
-        <div class="flex flex-wrap gap-2">
+    <div class="categories-panel">
+        <h2 class="categories-title">Categories</h2>
+        <div class="categories-grid">
             <a
                 href="/category/all"
                 hx-get="/category/all"
                 hx-target="#model-grid"
                 hx-swap="outerHTML"
                 hx-push-url="true"
-                class={`px-4 py-2 rounded-lg transition-colors whitespace-nowrap
-                    ${currentCategory == "all" ? 
-                        "bg-blue-500 text-white hover:bg-blue-600" : 
-                        "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600"}`}
+                class={templ.Classes(
+                    "category-button",
+                    templ.KV("active", currentCategory == "all"),
+                )}
             >
                 All
             </a>
@@ -24,12 +26,12 @@ templ Categories(categories []string, currentCategory string) {
                     hx-target="#model-grid"
                     hx-swap="outerHTML"
                     hx-push-url="true"
-                    class={`px-4 py-2 rounded-lg transition-colors whitespace-nowrap
-                        ${currentCategory == category ? 
-                            "bg-blue-500 text-white hover:bg-blue-600" : 
-                            "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600"}`}
+                    class={templ.Classes(
+                        "category-button",
+                        templ.KV("active", currentCategory == category),
+                    )}
                 >
-                    { category }
+                    { strings.Title(strings.ToLower(category)) }
                 </a>
             }
         </div>
