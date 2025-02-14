@@ -171,10 +171,11 @@ body {
 /* Model Grid */
 .model-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
   min-height: 400px;
   width: 100%;
+  align-items: start;
 }
 
 @media (min-width: 1024px) {
@@ -192,6 +193,9 @@ body {
   transition: transform 0.2s, box-shadow 0.2s;
   box-shadow: var(--shadow);
   border: 1px solid var(--color-border);
+  max-width: 300px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .model-card:hover {
@@ -199,9 +203,16 @@ body {
   box-shadow: var(--shadow-md);
 }
 
-.model-image {
+.model-image-container {
   aspect-ratio: 1;
   width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.model-image {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
@@ -336,4 +347,5 @@ select.nav-input {
   .nav-input {
     width: 200px;
   }
+} 
 } 
