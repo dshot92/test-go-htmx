@@ -3,7 +3,6 @@ package templates
 import (
 	t "github.com/a-h/templ"
 	"net/url"
-	"fmt"
 )
 
 func safeViewURL(category, name string) t.SafeURL {
@@ -18,7 +17,7 @@ func getThumbnailPath(model Model) string {
 }
 
 func getGridColumnsClass(columns int) string {
-	return fmt.Sprintf("grid gap-6 grid-cols-%d", columns)
+	return "grid gap-6 grid-cols-3 lg:grid-cols-5"
 }
 
 templ ModelGrid(models []Model, columns int) {
@@ -32,31 +31,6 @@ templ ModelGrid(models []Model, columns int) {
 					placeholder="Search by name..."
 					class="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
 				/>
-				<div class="flex items-center gap-2 ml-4">
-					<span class="text-sm text-gray-600 dark:text-gray-300">Columns:</span>
-					<button
-						hx-get="/grid/columns/decrease"
-						hx-target="#grid-content"
-						hx-swap="outerHTML"
-						class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white"
-					>
-						-
-					</button>
-					<span 
-                        id="column-count" 
-                        class="text-sm text-gray-600 dark:text-gray-300 min-w-[1.5rem] text-center"
-                        hx-get="/grid/columns/count"
-                        hx-trigger="load, columnsChanged from:body"
-                    >{ fmt.Sprint(columns) }</span>
-					<button
-						hx-get="/grid/columns/increase"
-						hx-target="#grid-content"
-						hx-swap="outerHTML"
-						class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white"
-					>
-						+
-					</button>
-				</div>
 			</div>
 		</div>
 		@RenderGridContent(models, columns)
@@ -94,13 +68,6 @@ templ ModelGrid(models []Model, columns int) {
 				filterModels(e.target.value);
 			}, 300));
 		});
-
-        // Listen for grid content updates and dispatch column change event
-        document.body.addEventListener('htmx:afterSwap', function(evt) {
-            if (evt.detail.target.id === 'grid-content') {
-                document.body.dispatchEvent(new Event('columnsChanged'));
-            }
-        });
 	</script>
 }
 

@@ -52,7 +52,7 @@ func Index(models []Model, categories []string, currentCategory string) templ.Co
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <div class=\"container mx-auto px-4 py-6\"><div class=\"grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6\"><aside>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <div class=\"container mx-auto px-4 py-6\"><div class=\"flex flex-col gap-6\"><aside>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -64,7 +64,7 @@ func Index(models []Model, categories []string, currentCategory string) templ.Co
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = ModelGrid(models, 6).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = ModelGrid(models, 5).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

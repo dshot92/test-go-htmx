@@ -1,23 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
-	"sync"
 	"test-go-htmx/templates"
 
 	"github.com/labstack/echo/v4"
-)
-
-// Global state for grid columns
-var (
-	gridColumnsMutex sync.RWMutex
-	gridColumns      = 6 // Default number of columns
 )
 
 func main() {
@@ -26,13 +18,10 @@ func main() {
 	// Serve static files
 	e.Static("/static", "static")
 
-	// Routes - Updated to match frontend URLs
+	// Routes - Remove column-related routes
 	e.GET("/", handleIndex)
 	e.GET("/category/:category", handleFilter)
 	e.GET("/view/:category/:name", handleView)
-	e.GET("/grid/columns/increase", handleIncreaseColumns)
-	e.GET("/grid/columns/decrease", handleDecreaseColumns)
-	e.GET("/grid/columns/count", handleGetColumnCount)
 
 	// Start server
 	log.Printf("Starting server on :8080")
@@ -119,34 +108,6 @@ func loadModels() ([]templates.Model, []string) {
 	return models, categoryList
 }
 
-func handleIncreaseColumns(c echo.Context) error {
-	gridColumnsMutex.Lock()
-	if gridColumns < 12 {
-		gridColumns++
-	}
-	currentColumns := gridColumns
-	gridColumnsMutex.Unlock()
-
-	models, _ := loadModels()
-	return renderGridContent(c, models, currentColumns)
-}
-
-func handleDecreaseColumns(c echo.Context) error {
-	gridColumnsMutex.Lock()
-	if gridColumns > 1 {
-		gridColumns--
-	}
-	currentColumns := gridColumns
-	gridColumnsMutex.Unlock()
-
-	models, _ := loadModels()
-	return renderGridContent(c, models, currentColumns)
-}
-
-func renderGridContent(c echo.Context, models []templates.Model, columns int) error {
-	return templates.RenderGridContent(models, columns).Render(c.Request().Context(), c.Response().Writer)
-}
-
 func handleFilter(c echo.Context) error {
 	models, categories := loadModels()
 	category := c.Param("category")
@@ -167,10 +128,8 @@ func handleFilter(c echo.Context) error {
 				}
 			}
 		}
-		gridColumnsMutex.RLock()
-		currentColumns := gridColumns
-		gridColumnsMutex.RUnlock()
-		return templates.ModelGrid(filteredModels, currentColumns).Render(c.Request().Context(), c.Response().Writer)
+		// Use fixed column count of 5
+		return templates.ModelGrid(filteredModels, 5).Render(c.Request().Context(), c.Response().Writer)
 	}
 
 	// For regular browser requests, return the full page
@@ -226,11 +185,4 @@ func handleView(c echo.Context) error {
 		Title: targetModel.Name,
 	}
 	return templates.ModelViewer(viewData).Render(c.Request().Context(), c.Response().Writer)
-}
-
-func handleGetColumnCount(c echo.Context) error {
-	gridColumnsMutex.RLock()
-	count := gridColumns
-	gridColumnsMutex.RUnlock()
-	return c.String(http.StatusOK, fmt.Sprint(count))
 }
