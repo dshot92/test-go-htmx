@@ -6,6 +6,11 @@
   --border-color: #e2e8f0;
   --card-background: #ffffff;
   --spacing-unit: 1rem;
+  --border-radius: 0.375rem;
+  --shadow-color: rgb(0 0 0 / 0.1);
+  --shadow-color-dark: rgb(0 0 0 / 0.3);
+  --overlay-background: rgba(0, 0, 0, 0.5);
+  --transition-speed: 0.2s;
 }
 
 * {
@@ -19,10 +24,8 @@ body {
   background-color: var(--background-color);
   color: var(--text-color);
   line-height: 1.5;
-  overflow: hidden;
-  height: 100vh;
-  width: 100vw;
-  position: fixed;
+  min-height: 100vh;
+  width: 100%;
 }
 
 nav {
@@ -49,22 +52,27 @@ nav {
   min-width: 200px;
 }
 
-button {
+/* Common button styles */
+button, .back-button {
   background-color: var(--primary-color);
-  color: white;
+  color: var(--card-background);
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
+  border-radius: var(--border-radius);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color var(--transition-speed);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
 }
 
-button:hover {
+button:hover, .back-button:hover {
   background-color: var(--secondary-color);
 }
 
 main {
   padding: var(--spacing-unit);
+  height: 100%;
 }
 
 .model-grid {
@@ -83,10 +91,10 @@ main {
 .model-card {
   background-color: var(--card-background);
   border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
+  border-radius: var(--border-radius);
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
   width: 100%;
   display: grid;
   grid-template-areas:
@@ -94,12 +102,12 @@ main {
     "name";
   grid-template-rows: 200px 50px;
   text-decoration: none;
-  color: inherit;
+  color: var(--text-color);
 }
 
 .model-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  box-shadow: 0 4px 6px -1px var(--shadow-color);
 }
 
 .model-preview {
@@ -167,58 +175,58 @@ main {
 
 .model-viewer-container {
   width: 100%;
-  height: 100vh;
-  position: relative;
+  height: 100dvh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: block;
+  background-color: var(--background-color);
 }
 
 model-viewer {
   width: 100%;
-  height: 100%;
-  background-color: #f5f5f5;
-  position: absolute;
-  top: 0;
-  left: 0;
+  height: 100dvh;
+  background-color: var(--background-color);
 }
 
 .viewer-header {
   position: absolute;
-  top: 20px;
+  top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: var(--spacing-unit) 1fr var(--spacing-unit);
   align-items: center;
-  gap: 16px;
+  padding: var(--spacing-unit);
+  border-bottom: none;
 }
 
 .back-button {
   position: absolute;
-  left: 20px;
-  display: inline-flex;
-  align-items: center;
-  padding: 8px 16px;
-  background: #007bff;
-  color: white;
+  left: var(--spacing-unit);
+  backdrop-filter: blur(4px);
   text-decoration: none;
-  border-radius: 4px;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.back-button:hover {
-  background: #0056b3;
+  z-index: 1;
 }
 
 .model-title {
-  color: #333;
+  grid-column: 1 / -1;
+  color: var(--card-background);
   font-size: 24px;
   font-weight: 500;
   margin: 0;
   text-align: center;
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   background: transparent;
-  border-radius: 4px;
+  border-radius: var(--border-radius);
+  text-shadow: 0 1px 2px var(--shadow-color-dark);
+  color: black;
+}
+
+/* Remove the pseudo-element since we're using a different approach */
+.viewer-header::after {
+  display: none;
 }
 
 .error-message {
@@ -227,8 +235,8 @@ model-viewer {
   left: 50%;
   transform: translate(-50%, -50%);
   background: rgba(255, 0, 0, 0.1);
-  padding: 20px;
-  border-radius: 8px;
+  padding: var(--spacing-unit);
+  border-radius: var(--border-radius);
   text-align: center;
   display: none;
 }
@@ -239,10 +247,6 @@ model-viewer {
   gap: var(--spacing-unit);
   margin-bottom: var(--spacing-unit);
   flex-wrap: wrap;
-}
-
-.model-viewer-header h1 {
-  margin-right: auto;
 }
 
 .full-size-image {
@@ -279,6 +283,16 @@ model-viewer {
     padding: 0.375rem 0.75rem;
     font-size: 0.75rem;
   }
+
+  .viewer-header {
+    padding: calc(var(--spacing-unit) * 0.75) calc(var(--spacing-unit) * 0.5);
+  }
+  
+  .model-title {
+    font-size: 18px;
+    align-self: center;
+    justify-content: center;
+  }
 }
 
 /* Upload overlay styles */
@@ -290,13 +304,13 @@ model-viewer {
   transform: translate(-50%, -50%);
   width: 300px;
   height: 200px;
-  background: white;
-  border: 2px dashed #666;
-  border-radius: 8px;
+  background: var(--card-background);
+  border: 2px dashed var(--primary-color);
+  border-radius: var(--border-radius);
   z-index: 1000;
-  padding: 20px;
+  padding: var(--spacing-unit);
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow-color);
 }
 
 .upload-overlay.active {
@@ -308,8 +322,8 @@ model-viewer {
 }
 
 .upload-overlay.dragover {
-  background: #f0f0f0;
-  border-color: #333;
+  background: var(--background-color);
+  border-color: var(--secondary-color);
 }
 
 .upload-overlay-backdrop {
@@ -319,7 +333,7 @@ model-viewer {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--overlay-background);
   z-index: 999;
 }
 
