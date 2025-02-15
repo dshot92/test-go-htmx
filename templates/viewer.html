@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Name}} - Model Viewer</title>
+    <link rel="stylesheet" href="/static/css/global.css">
+    <!-- Import the model-viewer component -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+</head>
+<body>
+    <div class="model-viewer-container">
+        <div class="model-viewer-overlay">
+            <div class="model-info">
+                <h1>{{.Name}}</h1>
+                {{if .Section}}
+                <span class="section-tag">{{.Section}}</span>
+                {{end}}
+            </div>
+            <a href="/" class="back-button">← Back to Gallery</a>
+        </div>
+        <model-viewer
+            src="/static{{.Path}}"
+            alt="{{.Name}} 3D model"
+            auto-rotate
+            camera-controls
+            shadow-intensity="1"
+            environment-image="neutral"
+            exposure="1">
+        </model-viewer>
+    </div>
+</body>
+</html> 

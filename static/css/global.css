@@ -189,4 +189,82 @@ dialog::backdrop {
     color: var(--text-color);
     opacity: 0.7;
     font-size: 0.875rem;
+}
+
+.model-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.model-viewer-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+.model-viewer-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+    color: white;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.model-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.model-info h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.section-tag {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.back-button {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    transition: background-color 0.2s;
+}
+
+.back-button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+model-viewer {
+    width: 100%;
+    height: 100%;
+}
+
+.model-viewer-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-unit);
+    margin-bottom: var(--spacing-unit);
+    flex-wrap: wrap;
+}
+
+.model-viewer-header h1 {
+    margin-right: auto;
+}
+
+.full-size-image {
+    width: 100%;
+    height: auto;
+    display: block;
 } 

@@ -61,7 +61,7 @@ func getModels(category string) []Model {
 
 			model := Model{
 				Name:     strings.TrimSuffix(info.Name(), ".glb"),
-				Path:     relPath,
+				Path:     "/models/" + strings.Join(parts, "/"),
 				Category: category,
 				Section:  section,
 			}
@@ -112,6 +112,38 @@ func main() {
 		}
 		models := getModels(category)
 		tmpl.ExecuteTemplate(w, "grid.html", models)
+	})
+
+	r.Get("/view/*", func(w http.ResponseWriter, r *http.Request) {
+		modelPath := chi.URLParam(r, "*")
+		if !strings.HasPrefix(modelPath, "/models/") {
+			modelPath = "/models/" + modelPath
+		}
+
+		// Find the model in our categories
+		var foundModel Model
+		found := false
+
+		for _, category := range getCategories() {
+			models := getModels(category)
+			for _, model := range models {
+				if model.Path == modelPath {
+					foundModel = model
+					found = true
+					break
+				}
+			}
+			if found {
+				break
+			}
+		}
+
+		if !found {
+			http.Error(w, "Model not found", http.StatusNotFound)
+			return
+		}
+
+		tmpl.ExecuteTemplate(w, "viewer.html", foundModel)
 	})
 
 	r.Post("/upload/{category}", func(w http.ResponseWriter, r *http.Request) {

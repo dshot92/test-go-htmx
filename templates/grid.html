@@ -1,15 +1,17 @@
 {{range .}}
-<div class="model-card" data-model-path="{{.Path}}">
-    <div class="model-preview">
-        <img src="/static/thumbnails/{{.Category}}/{{if .Section}}{{.Section}}/{{end}}{{.Name}}.webp" 
-             alt="{{.Name}} thumbnail"
-             loading="lazy">
+<a href="/view/{{.Path}}" class="model-link">
+    <div class="model-card" data-model-path="{{.Path}}">
+        <div class="model-preview">
+            <img src="/static/thumbnails/{{.Category}}/{{if .Section}}{{.Section}}/{{end}}{{.Name}}.webp" 
+                 alt="{{.Name}} thumbnail"
+                 loading="lazy">
+        </div>
+        <div class="model-info">
+            <h3>{{.Name}}</h3>
+            {{if .Section}}
+            <span class="section-tag">{{.Section}}</span>
+            {{end}}
+        </div>
     </div>
-    <div class="model-info">
-        <h3>{{.Name}}</h3>
-        {{if .Section}}
-        <span class="section-tag">{{.Section}}</span>
-        {{end}}
-    </div>
-</div>
+</a>
 {{end}} 
