@@ -7,7 +7,7 @@
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
   <link rel="stylesheet" href="/static/css/global.css">
-<!-- </head> -->
+</head>
 <body>
   <nav>
     <div class="logo">Model Viewer</div>
@@ -29,7 +29,7 @@
   </nav>
 
   <main>
-    <div id="model-grid" class="model-grid">
+    <div id="model-grid" class="sections-container">
       {{template "grid.html" .Models}}
     </div>
   </main>
@@ -135,5 +135,17 @@
     // Close overlay when clicking backdrop
     uploadBackdrop.addEventListener('click', closeUploadOverlay);
   </script>
+
+  <style>
+    .sections-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+  </style>
 </body>
 </html>

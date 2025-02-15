@@ -29,6 +29,10 @@ type PageData struct {
 	ActiveCategory string
 }
 
+type GridData struct {
+	Sections map[string][]Model
+}
+
 func getCategories() []string {
 	var categories []string
 	entries, err := os.ReadDir("static/models")
@@ -73,6 +77,45 @@ func getModels(category string) []Model {
 	})
 
 	return result
+}
+
+func groupModelsBySection(models []Model) GridData {
+	sections := make(map[string][]Model)
+
+	// Check if any model has a section
+	hasAnySection := false
+	for _, model := range models {
+		if model.Section != "" {
+			hasAnySection = true
+			break
+		}
+	}
+
+	// If no sections exist, return all models in a single unnamed section
+	if !hasAnySection {
+		sections[""] = models
+		return GridData{Sections: sections}
+	}
+
+	// First, collect all models with sections
+	for _, model := range models {
+		if model.Section != "" {
+			sections[model.Section] = append(sections[model.Section], model)
+		}
+	}
+
+	// Then add "Others" section for models without a section
+	var othersModels []Model
+	for _, model := range models {
+		if model.Section == "" {
+			othersModels = append(othersModels, model)
+		}
+	}
+	if len(othersModels) > 0 {
+		sections["Others"] = othersModels
+	}
+
+	return GridData{Sections: sections}
 }
 
 func main() {
@@ -167,7 +210,8 @@ func main() {
 			}
 		}
 		models := getModels(category)
-		tmpl.ExecuteTemplate(w, "grid.html", models)
+		gridData := groupModelsBySection(models)
+		tmpl.ExecuteTemplate(w, "grid.html", gridData)
 	})
 
 	r.Get("/view/*", func(w http.ResponseWriter, r *http.Request) {

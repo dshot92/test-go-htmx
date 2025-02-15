@@ -1,15 +1,162 @@
-{{range .}}
-<a href="/view{{.Path}}" class="model-card">
-  <div class="model-preview">
-    <img src="/static/thumbnails/{{.Category}}/{{if .Section}}{{.Section}}/{{end}}{{.Name}}.webp" 
-       alt="{{.Name}} thumbnail"
-       loading="lazy">
-  </div>
-  <div class="model-info">
-    <h3>{{.Name}}</h3>
-    {{if .Section}}
-    <span class="section-tag">{{.Section}}</span>
-    {{end}}
-  </div>
-</a>
-{{end}} 
+{{range $sectionName, $sectionModels := .Sections}}
+  {{if eq $sectionName ""}}
+    {{/* No sections - display as a simple grid */}}
+    <div class="model-grid">
+      {{range $sectionModels}}
+        <a href="/view{{.Path}}" class="model-card">
+          <div class="model-preview">
+            <img src="/static/thumbnails/{{.Category}}/{{.Name}}.webp" 
+               alt="{{.Name}} thumbnail"
+               loading="lazy">
+          </div>
+          <div class="model-info">
+            <h3>{{.Name}}</h3>
+          </div>
+        </a>
+      {{end}}
+    </div>
+  {{else}}
+    {{/* Has sections - display with section headers */}}
+    <div class="section-container">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>{{$sectionName}}</h2>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="model-grid">
+          {{range $sectionModels}}
+            <a href="/view{{.Path}}" class="model-card">
+              <div class="model-preview">
+                <img src="/static/thumbnails/{{.Category}}/{{if .Section}}{{.Section}}/{{end}}{{.Name}}.webp" 
+                   alt="{{.Name}} thumbnail"
+                   loading="lazy">
+              </div>
+              <div class="model-info">
+                <h3>{{.Name}}</h3>
+              </div>
+            </a>
+          {{end}}
+        </div>
+      </div>
+    </div>
+  {{end}}
+{{end}}
+
+<style>
+.section-container {
+  width: 100%;
+  display: block;
+}
+
+.section-header {
+  background-color: var(--card-background);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.section-header:hover {
+  background-color: var(--background-color);
+}
+
+.section-content {
+  width: 100%;
+}
+
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--spacing-unit);
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .model-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--text-color);
+}
+
+.toggle-icon {
+  transition: transform 0.3s ease;
+}
+
+.section-container.collapsed .toggle-icon {
+  transform: rotate(-90deg);
+}
+
+.section-container.collapsed .section-content {
+  display: none;
+}
+
+.model-card {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--text-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.model-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.model-preview {
+  aspect-ratio: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-color);
+}
+
+.model-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.model-info {
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.model-info h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+</style>
+
+<script>
+function toggleSection(header) {
+  const container = header.parentElement;
+  container.classList.toggle('collapsed');
+}
+
+// Expand all sections by default
+document.addEventListener('DOMContentLoaded', function() {
+  const sections = document.querySelectorAll('.section-container');
+  sections.forEach(section => {
+    section.classList.remove('collapsed');
+  });
+});
+</script> 
