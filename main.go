@@ -25,7 +25,7 @@ type Model struct {
 
 type PageData struct {
 	Categories     []string
-	Models         []Model
+	Models         GridData
 	ActiveCategory string
 }
 
@@ -175,7 +175,7 @@ func main() {
 		// Create a model for the temporary file
 		model := Model{
 			Name: strings.TrimSuffix(handler.Filename, ".glb"),
-			Path: "/temp/" + handler.Filename,
+			Path: strings.TrimPrefix(tempFile, "static"), // Ensure path is relative to static directory
 		}
 
 		tmpl.ExecuteTemplate(w, "viewer.html", model)
@@ -193,9 +193,11 @@ func main() {
 		if len(categories) > 0 {
 			activeCategory = categories[0]
 		}
+		models := getModels(activeCategory)
+		gridData := groupModelsBySection(models)
 		data := PageData{
 			Categories:     categories,
-			Models:         getModels(activeCategory),
+			Models:         gridData,
 			ActiveCategory: activeCategory,
 		}
 		tmpl.ExecuteTemplate(w, "index.html", data)
