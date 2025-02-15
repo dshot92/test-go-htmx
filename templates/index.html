@@ -49,17 +49,6 @@
     </div>
   </main>
 
-  <dialog id="viewer-dialog">
-    <button class="close-button" onclick="document.getElementById('viewer-dialog').close()">×</button>
-    <model-viewer id="active-model" 
-           camera-controls
-           auto-rotate
-           shadow-intensity="1"
-           environment-image="neutral"
-           exposure="1">
-    </model-viewer>
-  </dialog>
-
   <div class="upload-overlay-backdrop"></div>
   <div class="upload-overlay">
     <div>Drag and drop your 3D model here</div>
@@ -164,8 +153,10 @@
 
     // NEW: toggle theme function and initialization
     function toggleTheme() {
-      document.body.classList.toggle('dark-theme');
-      if (document.body.classList.contains('dark-theme')) {
+      const root = document.documentElement;
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      if (!isDark) {
         localStorage.setItem('theme', 'dark');
         document.getElementById('theme-icon').textContent = "☀️";
       } else {
@@ -173,24 +164,15 @@
         document.getElementById('theme-icon').textContent = "🌙";
       }
     }
-    if (localStorage.getItem('theme') === 'dark') {
-      document.body.classList.add('dark-theme');
+    // Initialize theme from localStorage
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    if (savedTheme === 'dark') {
       document.getElementById('theme-icon').textContent = "☀️";
     } else {
       document.getElementById('theme-icon').textContent = "🌙";
     }
   </script>
 
-  <style>
-    .sections-container {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      width: 100%;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 1rem;
-    }
-  </style>
 </body>
 </html>
