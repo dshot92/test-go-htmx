@@ -79,6 +79,32 @@
       }
     });
 
+    // Add document-level drag and drop handlers
+    document.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (e.dataTransfer.types.includes('Files')) {
+        showUploadOverlay();
+      }
+    });
+
+    document.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      // Only hide if we're leaving the document
+      if (e.clientX <= 0 || e.clientX >= window.innerWidth ||
+          e.clientY <= 0 || e.clientY >= window.innerHeight) {
+        closeUploadOverlay();
+      }
+    });
+
+    document.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (file && file.name.toLowerCase().endsWith('.glb')) {
+        uploadFile(file);
+      }
+      closeUploadOverlay();
+    });
+
     function handleFileSelect(event) {
       const file = event.target.files[0];
       if (file) {
@@ -118,6 +144,7 @@
     function closeUploadOverlay() {
       document.querySelector('.upload-overlay').classList.remove('active');
       document.querySelector('.upload-overlay-backdrop').classList.remove('active');
+      document.querySelector('.upload-overlay').classList.remove('dragover');
     }
 
     // Update the upload button click handler
@@ -126,7 +153,7 @@
       showUploadOverlay();
     };
 
-    // Add drag and drop handlers
+    // Add drag and drop handlers for the upload overlay
     const uploadOverlay = document.querySelector('.upload-overlay');
     const uploadBackdrop = document.querySelector('.upload-overlay-backdrop');
 
