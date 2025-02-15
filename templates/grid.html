@@ -3,7 +3,7 @@
     {{/* No sections - display as a simple grid */}}
     <div class="model-grid">
       {{range $sectionModels}}
-        <a href="/view{{.Path}}" class="model-card">
+        <div class="model-card" data-model-path="{{.Path}}">
           <div class="model-preview">
             <img src="/static/thumbnails/{{.Category}}/{{.Name}}.webp" 
                alt="{{.Name}} thumbnail"
@@ -12,7 +12,7 @@
           <div class="model-info">
             <h3>{{.Name}}</h3>
           </div>
-        </a>
+        </div>
       {{end}}
     </div>
   {{else}}
@@ -25,7 +25,7 @@
       <div class="section-content">
         <div class="model-grid">
           {{range $sectionModels}}
-            <a href="/view{{.Path}}" class="model-card">
+            <div class="model-card" data-model-path="{{.Path}}">
               <div class="model-preview">
                 <img src="/static/thumbnails/{{.Category}}/{{if .Section}}{{.Section}}/{{end}}{{.Name}}.webp" 
                    alt="{{.Name}} thumbnail"
@@ -34,7 +34,7 @@
               <div class="model-info">
                 <h3>{{.Name}}</h3>
               </div>
-            </a>
+            </div>
           {{end}}
         </div>
       </div>

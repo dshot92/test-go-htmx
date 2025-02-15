@@ -189,16 +189,21 @@ func main() {
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		categories := getCategories()
-		var activeCategory string
-		if len(categories) > 0 {
-			activeCategory = categories[0]
+		category := r.URL.Query().Get("category")
+
+		// If no category is specified or the category doesn't exist, use the first one
+		if category == "" || !contains(categories, category) {
+			if len(categories) > 0 {
+				category = categories[0]
+			}
 		}
-		models := getModels(activeCategory)
+
+		models := getModels(category)
 		gridData := groupModelsBySection(models)
 		data := PageData{
 			Categories:     categories,
 			Models:         gridData,
-			ActiveCategory: activeCategory,
+			ActiveCategory: category,
 		}
 		tmpl.ExecuteTemplate(w, "index.html", data)
 	})
@@ -213,6 +218,10 @@ func main() {
 		}
 		models := getModels(category)
 		gridData := groupModelsBySection(models)
+
+		// Update URL with the category parameter
+		w.Header().Set("HX-Push-Url", "/?category="+category)
+
 		tmpl.ExecuteTemplate(w, "grid.html", gridData)
 	})
 
@@ -307,4 +316,14 @@ func main() {
 
 	log.Println("Server starting on :3000")
 	http.ListenAndServe(":3000", r)
+}
+
+// Helper function to check if a slice contains a string
+func contains(slice []string, str string) bool {
+	for _, v := range slice {
+		if v == str {
+			return true
+		}
+	}
+	return false
 }

@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>3D Model Viewer</title>
+  <script>
+    // Check for last category before page loads
+    if (sessionStorage.getItem('lastCategory') && document.referrer.includes('/view/')) {
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set('category', sessionStorage.getItem('lastCategory'));
+      window.location.search = urlParams.toString();
+    }
+  </script>
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
   <link rel="stylesheet" href="/static/css/global.css">
@@ -12,7 +20,13 @@
   <nav>
     <div class="logo">Model Viewer</div>
     <div class="category-selector">
-      <select hx-get="/models" hx-target="#model-grid" hx-trigger="change" name="category">
+      <select 
+        hx-get="/models" 
+        hx-target="#model-grid" 
+        hx-trigger="change" 
+        hx-push-url="true"
+        name="category"
+        onchange="updateURL(this.value)">
         {{range .Categories}}
         <option value="{{.}}" {{if eq . $.ActiveCategory}}selected{{end}}>{{.}}</option>
         {{end}}
@@ -53,13 +67,25 @@
   </div>
 
   <script>
+    // Add this function to update the URL when category changes
+    function updateURL(category) {
+      const url = new URL(window.location);
+      url.searchParams.set('category', category);
+      history.pushState({}, '', url);
+    }
+    
     document.addEventListener('click', function(e) {
       const modelCard = e.target.closest('.model-card');
       if (modelCard) {
         const modelPath = modelCard.dataset.modelPath;
-        const viewer = document.getElementById('active-model');
-        viewer.src = modelPath;
-        document.getElementById('viewer-dialog').showModal();
+        // Store the current category before viewing the model
+        const currentCategory = new URLSearchParams(window.location.search).get('category');
+        if (currentCategory) {
+          sessionStorage.setItem('lastCategory', currentCategory);
+        }
+        
+        // Navigate to the model view
+        window.location.href = '/view' + modelPath;
       }
     });
 
