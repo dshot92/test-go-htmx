@@ -1,186 +1,159 @@
 package main
 
 import (
+	"html/template"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
-	"test-go-htmx/templates"
 
-	"github.com/labstack/echo/v4"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 )
 
-func main() {
-	e := echo.New()
-
-	// Serve static files
-	e.Static("/static", "static")
-
-	// Routes - Remove column-related routes
-	e.GET("/", handleIndex)
-	e.GET("/category/:category", handleFilter)
-	e.GET("/view/:category/:name", handleView)
-
-	// Start server
-	log.Printf("Starting server on :8080")
-	e.Logger.Fatal(e.Start(":8080"))
+type Model struct {
+	Name     string
+	Path     string
+	Category string
+	Section  string
 }
 
-func loadModels() ([]templates.Model, []string) {
-	var models []templates.Model
-	categories := make(map[string]bool)
+type PageData struct {
+	Categories     []string
+	Models         []Model
+	ActiveCategory string
+}
 
-	// Log the current working directory
-	_, err := os.Getwd()
+func getCategories() []string {
+	var categories []string
+	entries, err := os.ReadDir("static/models")
 	if err != nil {
-		log.Printf("Error getting working directory: %v", err)
+		return categories
 	}
 
-	// Check if the models directory exists
-	if _, err := os.Stat("static/models"); os.IsNotExist(err) {
-		log.Printf("static/models directory does not exist!")
+	for _, entry := range entries {
+		if entry.IsDir() {
+			categories = append(categories, entry.Name())
+		}
 	}
+	return categories
+}
 
-	err = filepath.Walk("static/models", func(path string, info os.FileInfo, err error) error {
+func getModels(category string) []Model {
+	var result []Model
+	basePath := filepath.Join("static/models", category)
+
+	filepath.Walk(basePath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			log.Printf("Error accessing path %s: %v", path, err)
-			return err
-		}
-
-		// Log all files/directories being processed
-		// log.Printf("Processing path: %s (isDir: %v)", path, info.IsDir())
-
-		if info.IsDir() {
 			return nil
 		}
+		if !info.IsDir() && strings.HasSuffix(info.Name(), ".glb") {
+			relPath := strings.TrimPrefix(path, "static")
+			parts := strings.Split(strings.TrimPrefix(relPath, "/models/"), "/")
 
-		if !strings.HasSuffix(strings.ToLower(info.Name()), ".glb") {
-			return nil
+			section := ""
+			if len(parts) > 2 {
+				section = parts[1]
+			}
+
+			model := Model{
+				Name:     strings.TrimSuffix(info.Name(), ".glb"),
+				Path:     relPath,
+				Category: category,
+				Section:  section,
+			}
+			result = append(result, model)
 		}
-
-		// Get the path relative to models directory
-		relPath, _ := filepath.Rel("static/models", filepath.Dir(path))
-		pathParts := strings.Split(relPath, string(filepath.Separator))
-
-		// The first directory is the category
-		category := pathParts[0]
-
-		// The section is either the second directory or empty
-		section := ""
-		if len(pathParts) > 1 {
-			section = pathParts[1]
-		}
-
-		relPath = "/" + filepath.ToSlash(path)
-
-		model := templates.Model{
-			ID:       strings.TrimSuffix(info.Name(), ".glb"),
-			Name:     strings.TrimSuffix(info.Name(), ".glb"),
-			Path:     relPath,
-			Category: category,
-			Section:  section,
-			URL:      relPath,
-		}
-
-		// log.Printf("Found model: %+v", model)
-
-		models = append(models, model)
-		categories[category] = true
 		return nil
 	})
-	if err != nil {
-		log.Printf("Error loading models: %v", err)
-	}
 
-	var categoryList []string
-	for category := range categories {
-		categoryList = append(categoryList, category)
-	}
-	sort.Strings(categoryList)
-
-	// log.Printf("Loaded categories: %v", categoryList)
-	// log.Printf("Total models loaded: %d", len(models))
-
-	return models, categoryList
+	return result
 }
 
-func handleFilter(c echo.Context) error {
-	models, categories := loadModels()
-	category := c.Param("category")
+func main() {
+	r := chi.NewRouter()
 
-	// log.Printf("Filter request - Category: %s", category)
-	// log.Printf("Available categories: %v", categories)
-	// log.Printf("Total models before filtering: %d", len(models))
+	r.Use(middleware.Logger)
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "POST", "OPTIONS"},
+	}))
 
-	// Check if this is an HTMX request
-	if c.Request().Header.Get("HX-Request") == "true" {
-		var filteredModels []templates.Model
-		if category == "all" {
-			filteredModels = models
-		} else {
-			for _, model := range models {
-				if strings.EqualFold(model.Category, category) {
-					filteredModels = append(filteredModels, model)
-				}
+	// Create templates
+	tmpl := template.Must(template.ParseGlob("templates/*.html"))
+
+	// Serve static files
+	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		categories := getCategories()
+		var activeCategory string
+		if len(categories) > 0 {
+			activeCategory = categories[0]
+		}
+		data := PageData{
+			Categories:     categories,
+			Models:         getModels(activeCategory),
+			ActiveCategory: activeCategory,
+		}
+		tmpl.ExecuteTemplate(w, "index.html", data)
+	})
+
+	r.Get("/models", func(w http.ResponseWriter, r *http.Request) {
+		category := r.URL.Query().Get("category")
+		if category == "" {
+			categories := getCategories()
+			if len(categories) > 0 {
+				category = categories[0]
 			}
 		}
-		// Use fixed column count of 5
-		return templates.ModelGrid(filteredModels, 5).Render(c.Request().Context(), c.Response().Writer)
-	}
+		models := getModels(category)
+		tmpl.ExecuteTemplate(w, "grid.html", models)
+	})
 
-	// For regular browser requests, return the full page
-	if category == "all" || category == "" {
-		log.Printf("Returning all %d models", len(models))
-		return templates.Index(models, categories, "all").Render(c.Request().Context(), c.Response().Writer)
-	}
+	r.Post("/upload/{category}", func(w http.ResponseWriter, r *http.Request) {
+		category := chi.URLParam(r, "category")
 
-	var filteredModels []templates.Model
-	for _, model := range models {
-		// log.Printf("Comparing model category '%s' with requested category '%s'", model.Category, category)
-		if strings.EqualFold(model.Category, category) {
-			filteredModels = append(filteredModels, model)
+		// Parse the multipart form
+		err := r.ParseMultipartForm(10 << 20) // 10 MB max
+		if err != nil {
+			http.Error(w, "Unable to parse form", http.StatusBadRequest)
+			return
 		}
-	}
 
-	// log.Printf("Found %d models in category %s", len(filteredModels), category)
-	if len(filteredModels) == 0 {
-		log.Printf("WARNING: No models found for category: %s", category)
-	}
-
-	return templates.Index(filteredModels, categories, category).Render(c.Request().Context(), c.Response().Writer)
-}
-
-func handleIndex(c echo.Context) error {
-	models, categories := loadModels()
-	// log.Printf("Index request - Available categories: %v", categories)
-	return templates.Index(models, categories, "all").Render(c.Request().Context(), c.Response().Writer)
-}
-
-func handleView(c echo.Context) error {
-	models, _ := loadModels()
-	category := c.Param("category")
-	name := c.Param("name")
-
-	// log.Printf("View request - Category: %s, Name: %s", category, name)
-
-	var targetModel templates.Model
-	for _, model := range models {
-		if strings.EqualFold(model.Category, category) && strings.EqualFold(model.Name, name) {
-			targetModel = model
-			break
+		file, handler, err := r.FormFile("model")
+		if err != nil {
+			http.Error(w, "Error retrieving file", http.StatusBadRequest)
+			return
 		}
-	}
+		defer file.Close()
 
-	if targetModel.Name == "" {
-		log.Printf("Model not found - Category: %s, Name: %s", category, name)
-		return c.String(http.StatusNotFound, "Model not found")
-	}
+		// Ensure the category directory exists
+		categoryPath := filepath.Join("static/models", category)
+		os.MkdirAll(categoryPath, 0755)
 
-	viewData := templates.ModelViewData{
-		Model: targetModel,
-		Title: targetModel.Name,
-	}
-	return templates.ModelViewer(viewData).Render(c.Request().Context(), c.Response().Writer)
+		// Create the destination file
+		dst, err := os.Create(filepath.Join(categoryPath, handler.Filename))
+		if err != nil {
+			http.Error(w, "Error creating destination file", http.StatusInternalServerError)
+			return
+		}
+		defer dst.Close()
+
+		// Copy the uploaded file
+		if _, err := io.Copy(dst, file); err != nil {
+			http.Error(w, "Error saving file", http.StatusInternalServerError)
+			return
+		}
+
+		// Return the updated grid
+		models := getModels(category)
+		tmpl.ExecuteTemplate(w, "grid.html", models)
+	})
+
+	log.Println("Server starting on :3000")
+	http.ListenAndServe(":3000", r)
 }

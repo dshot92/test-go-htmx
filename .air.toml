@@ -2,32 +2,25 @@ root = "."
 tmp_dir = "tmp"
 
 [build]
-cmd = "templ generate && go build -o ./tmp/main ."
+cmd = "go build -o ./tmp/main ."
 bin = "./tmp/main"
 full_bin = "./tmp/main"
-include_ext = ["go", "templ"]
-exclude_dir = ["assets", "tmp", "vendor", ".git"]
-include_dir = []
-exclude_file = []
-delay = 200
-send_interrupt = true
-kill_delay = 500
+include_ext = ["go", "html"]
+exclude_dir = ["tmp", "vendor"]
+delay = 1000
+kill_delay = "0s"
+log = "build-errors.log"
+send_interrupt = false
 stop_on_error = true
-rerun = true
-rerun_delay = 500
-
-[log]
-time = true
-level = "debug"
-
-[screen]
-clear_on_rebuild = true
 
 [color]
 main = "magenta"
 watcher = "cyan"
 build = "yellow"
 runner = "green"
+
+[log]
+time = false
 
 [misc]
 clean_on_exit = true 
