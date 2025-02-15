@@ -120,23 +120,32 @@
 }
 
 .model-preview {
-  aspect-ratio: 1;
-  overflow: hidden;
+  padding: 1rem;
+  background-color: var(--background-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--background-color);
+  aspect-ratio: 1;
 }
 
 .model-preview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+  transition: filter 0.2s ease;
+}
+
+.model-card:hover .model-preview img {
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.3));
 }
 
 .model-info {
   padding: 0.75rem;
   text-align: center;
+  background-color: var(--card-background);
 }
 
 .model-info h3 {
