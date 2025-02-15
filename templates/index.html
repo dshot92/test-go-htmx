@@ -19,7 +19,12 @@
             </select>
         </div>
         <div class="upload-button">
-            <button onclick="document.getElementById('upload-dialog').showModal()">Upload Model</button>
+            <input type="file" 
+                   id="model-input" 
+                   accept=".glb" 
+                   style="display: none"
+                   onchange="handleFileSelect(event)">
+            <button onclick="document.getElementById('model-input').click()">Upload Model</button>
         </div>
     </nav>
 
@@ -28,20 +33,6 @@
             {{template "grid.html" .Models}}
         </div>
     </main>
-
-    <dialog id="upload-dialog">
-        <h2>Upload 3D Model</h2>
-        <form hx-post="/upload/{{.ActiveCategory}}" 
-              hx-target="#model-grid" 
-              hx-encoding="multipart/form-data"
-              class="upload-form">
-            <input type="file" name="model" accept=".glb" required>
-            <div class="dialog-buttons">
-                <button type="submit">Upload</button>
-                <button type="button" onclick="document.getElementById('upload-dialog').close()">Cancel</button>
-            </div>
-        </form>
-    </dialog>
 
     <dialog id="viewer-dialog">
         <button class="close-button" onclick="document.getElementById('viewer-dialog').close()">×</button>
@@ -64,6 +55,38 @@
                 document.getElementById('viewer-dialog').showModal();
             }
         });
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Create a form and submit it to the viewer
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/view/upload';
+                form.enctype = 'multipart/form-data';
+                
+                // Create a new file input with the correct name
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.name = 'model';  // Match the name the server expects
+                input.style.display = 'none';
+                
+                // Create a new FileList with the selected file
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                input.files = dataTransfer.files;
+                
+                // Append input to form
+                form.appendChild(input);
+                
+                // Append form to body and submit it
+                document.body.appendChild(form);
+                form.submit();
+                
+                // Reset the original file input
+                event.target.value = '';
+            }
+        }
     </script>
 </body>
 </html> 
