@@ -7,7 +7,7 @@
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
   <link rel="stylesheet" href="/static/css/global.css">
-</head>
+<!-- </head> -->
 <body>
   <nav>
     <div class="logo">Model Viewer</div>
@@ -45,6 +45,13 @@
     </model-viewer>
   </dialog>
 
+  <div class="upload-overlay-backdrop"></div>
+  <div class="upload-overlay">
+    <div>Drag and drop your 3D model here</div>
+    <div>- or -</div>
+    <button onclick="document.getElementById('model-input').click()">Choose File</button>
+  </div>
+
   <script>
     document.addEventListener('click', function(e) {
       const modelCard = e.target.closest('.model-card');
@@ -59,34 +66,74 @@
     function handleFileSelect(event) {
       const file = event.target.files[0];
       if (file) {
-        // Create a form and submit it to the viewer
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/view/upload';
-        form.enctype = 'multipart/form-data';
-
-        // Create a new file input with the correct name
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.name = 'model';  // Match the name the server expects
-        input.style.display = 'none';
-
-        // Create a new FileList with the selected file
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(file);
-        input.files = dataTransfer.files;
-
-        // Append input to form
-        form.appendChild(input);
-
-        // Append form to body and submit it
-        document.body.appendChild(form);
-        form.submit();
-
-        // Reset the original file input
-        event.target.value = '';
+        uploadFile(file);
       }
     }
+
+    function uploadFile(file) {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/view/upload';
+      form.enctype = 'multipart/form-data';
+
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.name = 'model';
+      input.style.display = 'none';
+
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      input.files = dataTransfer.files;
+
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+
+      // Reset the original file input and close the overlay
+      document.getElementById('model-input').value = '';
+      closeUploadOverlay();
+    }
+
+    function showUploadOverlay() {
+      document.querySelector('.upload-overlay').classList.add('active');
+      document.querySelector('.upload-overlay-backdrop').classList.add('active');
+    }
+
+    function closeUploadOverlay() {
+      document.querySelector('.upload-overlay').classList.remove('active');
+      document.querySelector('.upload-overlay-backdrop').classList.remove('active');
+    }
+
+    // Update the upload button click handler
+    document.querySelector('.upload-button button').onclick = function(e) {
+      e.preventDefault();
+      showUploadOverlay();
+    };
+
+    // Add drag and drop handlers
+    const uploadOverlay = document.querySelector('.upload-overlay');
+    const uploadBackdrop = document.querySelector('.upload-overlay-backdrop');
+
+    uploadOverlay.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadOverlay.classList.add('dragover');
+    });
+
+    uploadOverlay.addEventListener('dragleave', () => {
+      uploadOverlay.classList.remove('dragover');
+    });
+
+    uploadOverlay.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadOverlay.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file && file.name.toLowerCase().endsWith('.glb')) {
+        uploadFile(file);
+      }
+    });
+
+    // Close overlay when clicking backdrop
+    uploadBackdrop.addEventListener('click', closeUploadOverlay);
   </script>
 </body>
 </html>
