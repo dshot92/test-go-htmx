@@ -11,11 +11,8 @@
 <body>
     <div class="model-viewer-container">
         <div class="model-viewer-overlay">
-            <div class="model-info">
+            <div class="viewer-title">
                 <h1>{{if .Name}}{{.Name}}{{else}}Uploaded Model{{end}}</h1>
-                {{if .Section}}
-                <span class="section-tag">{{.Section}}</span>
-                {{end}}
             </div>
             <a href="/" class="back-button">← Back to Gallery</a>
         </div>
