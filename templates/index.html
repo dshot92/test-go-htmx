@@ -1,92 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Model Viewer</title>
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    <link rel="stylesheet" href="/static/css/global.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Model Viewer</title>
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+  <link rel="stylesheet" href="/static/css/global.css">
 </head>
 <body>
-    <nav>
-        <div class="logo">3D Model Viewer</div>
-        <div class="category-selector">
-            <select hx-get="/models" hx-target="#model-grid" hx-trigger="change" name="category">
-                {{range .Categories}}
-                <option value="{{.}}" {{if eq . $.ActiveCategory}}selected{{end}}>{{.}}</option>
-                {{end}}
-            </select>
-        </div>
-        <div class="upload-button">
-            <input type="file" 
-                   id="model-input" 
-                   accept=".glb" 
-                   style="display: none"
-                   onchange="handleFileSelect(event)">
-            <button onclick="document.getElementById('model-input').click()">Upload Model</button>
-        </div>
-    </nav>
+  <nav>
+    <div class="logo">Model Viewer</div>
+    <div class="category-selector">
+      <select hx-get="/models" hx-target="#model-grid" hx-trigger="change" name="category">
+        {{range .Categories}}
+        <option value="{{.}}" {{if eq . $.ActiveCategory}}selected{{end}}>{{.}}</option>
+        {{end}}
+      </select>
+    </div>
+    <div class="upload-button">
+      <input type="file" 
+           id="model-input" 
+           accept=".glb" 
+           style="display: none"
+           onchange="handleFileSelect(event)">
+      <button onclick="document.getElementById('model-input').click()">Upload Model</button>
+    </div>
+  </nav>
 
-    <main>
-        <div id="model-grid" class="model-grid">
-            {{template "grid.html" .Models}}
-        </div>
-    </main>
+  <main>
+    <div id="model-grid" class="model-grid">
+      {{template "grid.html" .Models}}
+    </div>
+  </main>
 
-    <dialog id="viewer-dialog">
-        <button class="close-button" onclick="document.getElementById('viewer-dialog').close()">×</button>
-        <model-viewer id="active-model" 
-                     camera-controls
-                     auto-rotate
-                     shadow-intensity="1"
-                     environment-image="neutral"
-                     exposure="1">
-        </model-viewer>
-    </dialog>
+  <dialog id="viewer-dialog">
+    <button class="close-button" onclick="document.getElementById('viewer-dialog').close()">×</button>
+    <model-viewer id="active-model" 
+           camera-controls
+           auto-rotate
+           shadow-intensity="1"
+           environment-image="neutral"
+           exposure="1">
+    </model-viewer>
+  </dialog>
 
-    <script>
-        document.addEventListener('click', function(e) {
-            const modelCard = e.target.closest('.model-card');
-            if (modelCard) {
-                const modelPath = modelCard.dataset.modelPath;
-                const viewer = document.getElementById('active-model');
-                viewer.src = modelPath;
-                document.getElementById('viewer-dialog').showModal();
-            }
-        });
+  <script>
+    document.addEventListener('click', function(e) {
+      const modelCard = e.target.closest('.model-card');
+      if (modelCard) {
+        const modelPath = modelCard.dataset.modelPath;
+        const viewer = document.getElementById('active-model');
+        viewer.src = modelPath;
+        document.getElementById('viewer-dialog').showModal();
+      }
+    });
 
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                // Create a form and submit it to the viewer
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/view/upload';
-                form.enctype = 'multipart/form-data';
-                
-                // Create a new file input with the correct name
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.name = 'model';  // Match the name the server expects
-                input.style.display = 'none';
-                
-                // Create a new FileList with the selected file
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                input.files = dataTransfer.files;
-                
-                // Append input to form
-                form.appendChild(input);
-                
-                // Append form to body and submit it
-                document.body.appendChild(form);
-                form.submit();
-                
-                // Reset the original file input
-                event.target.value = '';
-            }
-        }
-    </script>
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        // Create a form and submit it to the viewer
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/view/upload';
+        form.enctype = 'multipart/form-data';
+
+        // Create a new file input with the correct name
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.name = 'model';  // Match the name the server expects
+        input.style.display = 'none';
+
+        // Create a new FileList with the selected file
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        input.files = dataTransfer.files;
+
+        // Append input to form
+        form.appendChild(input);
+
+        // Append form to body and submit it
+        document.body.appendChild(form);
+        form.submit();
+
+        // Reset the original file input
+        event.target.value = '';
+      }
+    }
+  </script>
 </body>
-</html> 
+</html>
