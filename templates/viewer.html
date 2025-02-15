@@ -10,11 +10,9 @@
 </head>
 <body>
   <div class="model-viewer-container">
-    <div class="model-viewer-overlay">
-      <div class="viewer-title">
-        <h1>{{if .Name}}{{.Name}}{{else}}Uploaded Model{{end}}</h1>
-      </div>
-      <a href="/" class="back-button">← Back to Gallery</a>
+    <div class="viewer-header">
+      <a href="/" class="back-button">← Back</a>
+      <h1 class="model-title">{{if .Name}}{{.Name}}{{else}}Uploaded Model{{end}}</h1>
     </div>
     <model-viewer
       src="{{if .Path}}/static{{.Path}}{{else}}{{.BlobURL}}{{end}}"
@@ -23,11 +21,23 @@
       camera-controls
       shadow-intensity="1"
       environment-image="neutral"
-      exposure="1">
+      exposure="1"
+      loading="eager"
+      reveal="auto"
+      ar
+      ar-modes="webxr scene-viewer quick-look">
+      <div class="error-message">
+        Failed to load the 3D model. Please make sure it's a valid GLB file.
+      </div>
     </model-viewer>
   </div>
 
   <script>
+    document.querySelector('model-viewer').addEventListener('error', function(event) {
+      document.querySelector('.error-message').style.display = 'block';
+      console.error('Error loading model:', event);
+    });
+
     // Clean up blob URL when leaving the page
     if (window.blobURL) {
       window.addEventListener('unload', () => {

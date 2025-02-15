@@ -1,5 +1,5 @@
 {{range .}}
-<div class="model-card" data-model-path="{{.Path}}">
+<a href="/view{{.Path}}" class="model-card">
   <div class="model-preview">
     <img src="/static/thumbnails/{{.Category}}/{{if .Section}}{{.Section}}/{{end}}{{.Name}}.webp" 
        alt="{{.Name}} thumbnail"
@@ -11,5 +11,5 @@
     <span class="section-tag">{{.Section}}</span>
     {{end}}
   </div>
-</div>
+</a>
 {{end}} 
