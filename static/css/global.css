@@ -340,3 +340,11 @@ model-viewer {
 .upload-overlay-backdrop.active {
   display: block;
 }
+
+/* Dark Theme Styles */
+body.dark-theme {
+  --background-color: #1e293b;
+  --text-color: #f8fafc;
+  --card-background: #374151;
+  --border-color: #4b5563;
+}
